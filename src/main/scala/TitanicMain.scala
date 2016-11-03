@@ -1,7 +1,9 @@
 import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.ml.Pipeline
 import org.apache.spark.ml.classification.RandomForestClassifier
+import org.apache.spark.ml.evaluation.BinaryClassificationEvaluator
 import org.apache.spark.ml.feature.{StringIndexer, VectorAssembler}
+import org.apache.spark.ml.tuning.{CrossValidator, ParamGridBuilder}
 import org.apache.spark.sql.{SparkSession, _}
 import org.apache.spark.sql.functions._
 
@@ -80,16 +82,17 @@ object TitanicMain {
       .setFeaturesCol("Features")
 
     val pipeline = new Pipeline().setStages(
-      Array(sexIndexer, embarkedIndexer,
+      Array(sexIndexer,
+        embarkedIndexer,
         labelIndexer,
-        assembler, randomForest)
+        assembler,
+        randomForest
+      )
     )
 
     val model = pipeline.fit(training)
 
     val predictions = model.transform(test)
-    predictions.show()
-
     predictions.selectExpr("PassengerId", "cast(prediction as int) Survived")
       .repartition(1)
       .write
@@ -98,5 +101,37 @@ object TitanicMain {
       .save("target/predictions.csv")
 
     predictions.show()
+
+    // With cross validation
+
+    val params = new ParamGridBuilder()
+      .addGrid(randomForest.maxDepth, Array(4, 8, 12))
+      .addGrid(randomForest.numTrees, Array(15, 30, 50))
+      .addGrid(randomForest.maxBins, Array(16, 32, 64))
+      .addGrid(randomForest.impurity, Array("entropy", "gini"))
+      .build()
+
+    val evaluator = new BinaryClassificationEvaluator()
+      .setLabelCol("Label")
+      .setRawPredictionCol("prediction")
+      .setMetricName("areaUnderPR")
+
+    val cv = new CrossValidator()
+      .setEstimator(pipeline)
+      .setEvaluator(evaluator)
+      .setEstimatorParamMaps(params)
+      .setNumFolds(10)
+
+    val crossValidatorModel = cv.fit(training)
+    val predictionsCV = crossValidatorModel.transform(test)
+
+    predictionsCV.selectExpr("PassengerId", "cast(prediction as int) Survived")
+      .repartition(1)
+      .write
+      .format("com.databricks.spark.csv")
+      .option("header", "true")
+      .save("target/predictionsCV.csv")
+
+    predictionsCV.show()
   }
 }
