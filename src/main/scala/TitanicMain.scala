@@ -54,6 +54,16 @@ object TitanicMain {
     training = training.na.drop("any", Array("Fare"))
     test = test.na.fill(8.05, Array("Fare"))
 
+    // add title
+    val nameToTitle: String => String = _.replaceAll(""".*, |\..*""", "") match {
+      case "Miss" => "Miss"
+      case "Mr" => "Mr"
+      case "Mrs" => "Mrs"
+      case _ => "RareTitle"
+    }
+    training = training.withColumn("title", udf(nameToTitle).apply(training("Name")))
+    test = test.withColumn("title", udf(nameToTitle).apply(test("Name")))
+
     // Index Sex
     val sexIndexer = new StringIndexer()
       .setInputCol("Sex")
@@ -66,6 +76,12 @@ object TitanicMain {
       .setOutputCol("EmbarkedIndex")
       .fit(training)
 
+    // Title Embarked
+    val titleIndexer = new StringIndexer()
+      .setInputCol("title")
+      .setOutputCol("titleIndex")
+      .fit(training)
+
     // Index Survived as the Label
     val labelIndexer = new StringIndexer()
       .setInputCol("Survived")
@@ -73,8 +89,7 @@ object TitanicMain {
       .fit(training)
 
     val assembler = new VectorAssembler()
-      //      .setInputCols(Array("Age", "SibSp", "Parch", "Fare", "SexIndex", "EmbarkedIndex"))
-      .setInputCols(Array("Fare", "SexIndex", "EmbarkedIndex"))
+      .setInputCols(Array("Pclass", "Age", "Fare", "SexIndex", "EmbarkedIndex", "titleIndex"))
       .setOutputCol("Features")
 
     val randomForest = new RandomForestClassifier()
@@ -84,6 +99,7 @@ object TitanicMain {
     val pipeline = new Pipeline().setStages(
       Array(sexIndexer,
         embarkedIndexer,
+        titleIndexer,
         labelIndexer,
         assembler,
         randomForest
@@ -93,45 +109,45 @@ object TitanicMain {
     val model = pipeline.fit(training)
 
     val predictions = model.transform(test)
-    predictions.selectExpr("PassengerId", "cast(prediction as int) Survived")
-      .repartition(1)
-      .write
-      .format("com.databricks.spark.csv")
-      .option("header", "true")
-      .save("target/predictions.csv")
+//    predictions.selectExpr("PassengerId", "cast(prediction as int) Survived")
+//      .repartition(1)
+//      .write
+//      .format("com.databricks.spark.csv")
+//      .option("header", "true")
+//      .save("target/predictions.csv")
 
     predictions.show()
 
     // With cross validation
 
-    val params = new ParamGridBuilder()
-      .addGrid(randomForest.maxDepth, Array(4, 8, 12))
-      .addGrid(randomForest.numTrees, Array(15, 30, 50))
-      .addGrid(randomForest.maxBins, Array(16, 32, 64))
-      .addGrid(randomForest.impurity, Array("entropy", "gini"))
-      .build()
-
-    val evaluator = new BinaryClassificationEvaluator()
-      .setLabelCol("Label")
-      .setRawPredictionCol("prediction")
-      .setMetricName("areaUnderPR")
-
-    val cv = new CrossValidator()
-      .setEstimator(pipeline)
-      .setEvaluator(evaluator)
-      .setEstimatorParamMaps(params)
-      .setNumFolds(10)
-
-    val crossValidatorModel = cv.fit(training)
-    val predictionsCV = crossValidatorModel.transform(test)
-
-    predictionsCV.selectExpr("PassengerId", "cast(prediction as int) Survived")
-      .repartition(1)
-      .write
-      .format("com.databricks.spark.csv")
-      .option("header", "true")
-      .save("target/predictionsCV.csv")
-
-    predictionsCV.show()
+//    val params = new ParamGridBuilder()
+//      .addGrid(randomForest.maxDepth, Array(4, 8, 12))
+//      .addGrid(randomForest.numTrees, Array(15, 30, 50))
+//      .addGrid(randomForest.maxBins, Array(16, 32, 64))
+//      .addGrid(randomForest.impurity, Array("entropy", "gini"))
+//      .build()
+//
+//    val evaluator = new BinaryClassificationEvaluator()
+//      .setLabelCol("Label")
+//      .setRawPredictionCol("prediction")
+//      .setMetricName("areaUnderPR")
+//
+//    val cv = new CrossValidator()
+//      .setEstimator(pipeline)
+//      .setEvaluator(evaluator)
+//      .setEstimatorParamMaps(params)
+//      .setNumFolds(10)
+//
+//    val crossValidatorModel = cv.fit(training)
+//    val predictionsCV = crossValidatorModel.transform(test)
+//
+//    predictionsCV.selectExpr("PassengerId", "cast(prediction as int) Survived")
+//      .repartition(1)
+//      .write
+//      .format("com.databricks.spark.csv")
+//      .option("header", "true")
+//      .save("target/predictionsCV.csv")
+//
+//    predictionsCV.show()
   }
 }
