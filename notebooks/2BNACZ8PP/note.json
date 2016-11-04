@@ -2,7 +2,7 @@
   "paragraphs": [
     {
       "text": "%dep\nz.reset()\nz.load(\"com.databricks:spark-csv_2.10:1.4.0\")\n\n\n",
-      "dateUpdated": "Jun 28, 2016 10:20:30 AM",
+      "dateUpdated": "Nov 4, 2016 3:22:01 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -12,7 +12,12 @@
           "keys": [],
           "values": [],
           "groups": [],
-          "scatter": {}
+          "scatter": {},
+          "map": {
+            "baseMapType": "Streets",
+            "isOnline": true,
+            "pinCols": []
+          }
         },
         "enabled": true,
         "editorMode": "ace/mode/scala"
@@ -27,17 +32,17 @@
       "result": {
         "code": "SUCCESS",
         "type": "TEXT",
-        "msg": "res0: org.apache.zeppelin.spark.dep.Dependency \u003d org.apache.zeppelin.spark.dep.Dependency@231073ed\n"
+        "msg": "DepInterpreter(%dep) deprecated. Remove dependencies and repositories through GUI interpreter menu instead.\nDepInterpreter(%dep) deprecated. Load dependency through GUI interpreter menu instead.\nres0: org.apache.zeppelin.dep.Dependency \u003d org.apache.zeppelin.dep.Dependency@7e60c427\n"
       },
       "dateCreated": "Jun 24, 2016 3:47:57 PM",
-      "dateStarted": "Jun 28, 2016 10:20:30 AM",
-      "dateFinished": "Jun 28, 2016 10:20:37 AM",
+      "dateStarted": "Nov 4, 2016 3:22:01 PM",
+      "dateFinished": "Nov 4, 2016 3:22:17 PM",
       "status": "FINISHED",
       "progressUpdateIntervalMs": 500
     },
     {
-      "text": "val PATH \u003d \"/Users/raphael/devs/spark/lendingc/other/loan.csv\"\n\nval inDf \u003d sqlContext\n      .read\n      .format(\"com.databricks.spark.csv\")\n      .option(\"header\", \"true\")\n      .option(\"inferSchema\", \"true\")\n      .load(PATH)\n      .cache()\n\ninDf.registerTempTable(\"data\")",
-      "dateUpdated": "Jun 28, 2016 11:26:24 AM",
+      "text": "val PATH \u003d \"/usr/zeppelin/data/loan.csv\"\n\nval inDf \u003d sqlContext\n      .read\n      .format(\"com.databricks.spark.csv\")\n      .option(\"header\", \"true\")\n      .option(\"inferSchema\", \"true\")\n      .load(PATH)\n      .cache()\n\ninDf.registerTempTable(\"data\")",
+      "dateUpdated": "Nov 4, 2016 3:27:49 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
@@ -47,7 +52,12 @@
           "keys": [],
           "values": [],
           "groups": [],
-          "scatter": {}
+          "scatter": {},
+          "map": {
+            "baseMapType": "Streets",
+            "isOnline": true,
+            "pinCols": []
+          }
         },
         "enabled": true
       },
@@ -61,49 +71,31 @@
       "result": {
         "code": "SUCCESS",
         "type": "TEXT",
-        "msg": "PATH: String \u003d /Users/raphael/devs/spark/lendingc/other/loan.csv\ninDf: org.apache.spark.sql.DataFrame \u003d [id: int, member_id: int, loan_amnt: double, funded_amnt: double, funded_amnt_inv: double, term: string, int_rate: double, installment: double, grade: string, sub_grade: string, emp_title: string, emp_length: string, home_ownership: string, annual_inc: double, verification_status: string, issue_d: string, loan_status: string, pymnt_plan: string, url: string, desc: string, purpose: string, title: string, zip_code: string, addr_state: string, dti: double, delinq_2yrs: double, earliest_cr_line: string, inq_last_6mths: double, mths_since_last_delinq: double, mths_since_last_record: double, open_acc: double, pub_rec: double, revol_bal: double, revol_util: double, total_acc: double, initial_list_status: string, out_prncp: double, out_prncp_inv: double, t..."
+        "msg": "\nPATH: String \u003d /usr/zeppelin/data/loan.csv\n\ninDf: org.apache.spark.sql.Dataset[org.apache.spark.sql.Row] \u003d [id: int, member_id: int ... 72 more fields]\n\nwarning: there was one deprecation warning; re-run with -deprecation for details\n"
       },
       "dateCreated": "Jun 24, 2016 4:32:16 PM",
-      "dateStarted": "Jun 28, 2016 11:26:24 AM",
-      "dateFinished": "Jun 28, 2016 11:26:32 AM",
+      "dateStarted": "Nov 4, 2016 3:27:49 PM",
+      "dateFinished": "Nov 4, 2016 3:27:59 PM",
       "status": "FINISHED",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "%sql\nselect loan_status, count(*) from data group by loan_status",
-      "dateUpdated": "Jun 27, 2016 5:07:55 PM",
+      "dateUpdated": "Nov 4, 2016 3:27:53 PM",
       "config": {
         "colWidth": 12.0,
         "graph": {
           "mode": "table",
           "height": 300.0,
           "optionOpen": false,
-          "keys": [
-            {
-              "name": "id",
-              "index": 0.0,
-              "aggr": "sum"
-            }
-          ],
-          "values": [
-            {
-              "name": "member_id",
-              "index": 1.0,
-              "aggr": "sum"
-            }
-          ],
+          "keys": [],
+          "values": [],
           "groups": [],
-          "scatter": {
-            "xAxis": {
-              "name": "id",
-              "index": 0.0,
-              "aggr": "sum"
-            },
-            "yAxis": {
-              "name": "member_id",
-              "index": 1.0,
-              "aggr": "sum"
-            }
+          "scatter": {},
+          "map": {
+            "baseMapType": "Streets",
+            "isOnline": true,
+            "pinCols": []
           }
         },
         "enabled": true,
@@ -119,11 +111,11 @@
       "result": {
         "code": "SUCCESS",
         "type": "TABLE",
-        "msg": "loan_status\t_c1\nDoes not meet the credit policy. Status:Charged Off\t761\nCharged Off\t45248\nFully Paid\t207723\nIn Grace Period\t6253\nDoes not meet the credit policy. Status:Fully Paid\t1988\nCurrent\t601779\nLate (16-30 days)\t2357\nIssued\t8460\nDefault\t1219\nLate (31-120 days)\t11591\n"
+        "msg": "loan_status\tcount(1)\nFully Paid\t207722\nDefault\t1219\nIn Grace Period\t6253\nDoes not meet the credit policy. Status:Fully Paid\t1988\nCharged Off\t45248\nOct-2015\t1\nLate (31-120 days)\t11591\nIssued\t8460\nCurrent\t601778\nDoes not meet the credit policy. Status:Charged Off\t761\nLate (16-30 days)\t2357\n"
       },
       "dateCreated": "Jun 24, 2016 4:11:47 PM",
-      "dateStarted": "Jun 27, 2016 5:07:55 PM",
-      "dateFinished": "Jun 27, 2016 5:09:32 PM",
+      "dateStarted": "Nov 4, 2016 3:27:53 PM",
+      "dateFinished": "Nov 4, 2016 3:28:27 PM",
       "status": "FINISHED",
       "progressUpdateIntervalMs": 500
     },
@@ -364,7 +356,17 @@
   ],
   "name": "test spark",
   "id": "2BNACZ8PP",
-  "angularObjects": {},
+  "angularObjects": {
+    "2BYSDWY9A:shared_process": [],
+    "2C1WKEJJJ:shared_process": [],
+    "2BZPWWTJT:shared_process": [],
+    "2C1Q3MZQ3:shared_process": [],
+    "2C1HRH1S8:shared_process": [],
+    "2BZWNRJDT:shared_process": [],
+    "2C1MBWNWA:shared_process": [],
+    "2C1BABWHK:shared_process": [],
+    "2BZ9WW6DM:shared_process": []
+  },
   "config": {},
   "info": {}
 }
