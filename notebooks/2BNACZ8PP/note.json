@@ -1,0 +1,370 @@
+{
+  "paragraphs": [
+    {
+      "text": "%dep\nz.reset()\nz.load(\"com.databricks:spark-csv_2.10:1.4.0\")\n\n\n",
+      "dateUpdated": "Jun 28, 2016 10:20:30 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1466797677288_-1212285565",
+      "id": "20160624-154757_1195205335",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "res0: org.apache.zeppelin.spark.dep.Dependency \u003d org.apache.zeppelin.spark.dep.Dependency@231073ed\n"
+      },
+      "dateCreated": "Jun 24, 2016 3:47:57 PM",
+      "dateStarted": "Jun 28, 2016 10:20:30 AM",
+      "dateFinished": "Jun 28, 2016 10:20:37 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "val PATH \u003d \"/Users/raphael/devs/spark/lendingc/other/loan.csv\"\n\nval inDf \u003d sqlContext\n      .read\n      .format(\"com.databricks.spark.csv\")\n      .option(\"header\", \"true\")\n      .option(\"inferSchema\", \"true\")\n      .load(PATH)\n      .cache()\n\ninDf.registerTempTable(\"data\")",
+      "dateUpdated": "Jun 28, 2016 11:26:24 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1466800336965_943556865",
+      "id": "20160624-163216_2120793096",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "PATH: String \u003d /Users/raphael/devs/spark/lendingc/other/loan.csv\ninDf: org.apache.spark.sql.DataFrame \u003d [id: int, member_id: int, loan_amnt: double, funded_amnt: double, funded_amnt_inv: double, term: string, int_rate: double, installment: double, grade: string, sub_grade: string, emp_title: string, emp_length: string, home_ownership: string, annual_inc: double, verification_status: string, issue_d: string, loan_status: string, pymnt_plan: string, url: string, desc: string, purpose: string, title: string, zip_code: string, addr_state: string, dti: double, delinq_2yrs: double, earliest_cr_line: string, inq_last_6mths: double, mths_since_last_delinq: double, mths_since_last_record: double, open_acc: double, pub_rec: double, revol_bal: double, revol_util: double, total_acc: double, initial_list_status: string, out_prncp: double, out_prncp_inv: double, t..."
+      },
+      "dateCreated": "Jun 24, 2016 4:32:16 PM",
+      "dateStarted": "Jun 28, 2016 11:26:24 AM",
+      "dateFinished": "Jun 28, 2016 11:26:32 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%sql\nselect loan_status, count(*) from data group by loan_status",
+      "dateUpdated": "Jun 27, 2016 5:07:55 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [
+            {
+              "name": "id",
+              "index": 0.0,
+              "aggr": "sum"
+            }
+          ],
+          "values": [
+            {
+              "name": "member_id",
+              "index": 1.0,
+              "aggr": "sum"
+            }
+          ],
+          "groups": [],
+          "scatter": {
+            "xAxis": {
+              "name": "id",
+              "index": 0.0,
+              "aggr": "sum"
+            },
+            "yAxis": {
+              "name": "member_id",
+              "index": 1.0,
+              "aggr": "sum"
+            }
+          }
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/sql"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1466799107159_-1541093524",
+      "id": "20160624-161147_1571552948",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TABLE",
+        "msg": "loan_status\t_c1\nDoes not meet the credit policy. Status:Charged Off\t761\nCharged Off\t45248\nFully Paid\t207723\nIn Grace Period\t6253\nDoes not meet the credit policy. Status:Fully Paid\t1988\nCurrent\t601779\nLate (16-30 days)\t2357\nIssued\t8460\nDefault\t1219\nLate (31-120 days)\t11591\n"
+      },
+      "dateCreated": "Jun 24, 2016 4:11:47 PM",
+      "dateStarted": "Jun 27, 2016 5:07:55 PM",
+      "dateFinished": "Jun 27, 2016 5:09:32 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "val samplePATH \u003d \"/Users/raphael/devs/spark/lendingc/src/main/resources/lending-club-loan-data/loan-sample.csv\"\n\nval sampleDf \u003d sqlContext\n      .read\n      .format(\"com.databricks.spark.csv\")\n      .option(\"header\", \"true\")\n      .option(\"inferSchema\", \"true\")\n      .load(samplePATH)\n      .cache()\n\nsampleDf.registerTempTable(\"sample\")",
+      "dateUpdated": "Jun 28, 2016 10:20:46 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1467061943702_1842202278",
+      "id": "20160627-171223_1849669202",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "samplePATH: String \u003d /Users/raphael/devs/spark/lendingc/src/main/resources/lending-club-loan-data/loan-sample.csv\nsampleDf: org.apache.spark.sql.DataFrame \u003d [id: int, member_id: int, loan_amnt: double, funded_amnt: double, funded_amnt_inv: double, term: string, int_rate: double, installment: double, grade: string, sub_grade: string, emp_title: string, emp_length: string, home_ownership: string, annual_inc: double, verification_status: string, issue_d: string, loan_status: string, pymnt_plan: string, url: string, desc: string, purpose: string, title: string, zip_code: string, addr_state: string, dti: double, delinq_2yrs: double, earliest_cr_line: string, inq_last_6mths: double, mths_since_last_delinq: double, mths_since_last_record: double, open_acc: double, pub_rec: double, revol_bal: double, revol_util: double, total_acc: double, initial_list_status: string, out_prncp: double, out_prncp_inv: doubl..."
+      },
+      "dateCreated": "Jun 27, 2016 5:12:23 PM",
+      "dateStarted": "Jun 28, 2016 10:20:46 AM",
+      "dateFinished": "Jun 28, 2016 10:21:09 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md\n\nselect * from (select * from sample) as s",
+      "dateUpdated": "Jun 28, 2016 10:48:25 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1467125275290_1201424560",
+      "id": "20160628-104755_611959622",
+      "dateCreated": "Jun 28, 2016 10:47:55 AM",
+      "status": "READY",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%sql\n\nselect loan_status, count(*) as count, count(*) * 100 / sum(count(*)) over() as percent\nfrom sample \ngroup by loan_status\n\n\n",
+      "dateUpdated": "Jun 28, 2016 11:35:23 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "pieChart",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [
+            {
+              "name": "loan_status",
+              "index": 0.0,
+              "aggr": "sum"
+            }
+          ],
+          "values": [
+            {
+              "name": "count",
+              "index": 1.0,
+              "aggr": "sum"
+            }
+          ],
+          "groups": [],
+          "scatter": {
+            "xAxis": {
+              "name": "loan_status",
+              "index": 0.0,
+              "aggr": "sum"
+            }
+          }
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1467062026859_1247150616",
+      "id": "20160627-171346_682103283",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TABLE",
+        "msg": "loan_status\tcount\tpercent\nCharged Off\t176\t17.61761761761762\nFully Paid\t729\t72.97297297297297\nCurrent\t91\t9.10910910910911\nDefault\t1\t0.1001001001001001\nLate (31-120 days)\t2\t0.2002002002002002\n"
+      },
+      "dateCreated": "Jun 27, 2016 5:13:46 PM",
+      "dateStarted": "Jun 28, 2016 11:35:23 AM",
+      "dateFinished": "Jun 28, 2016 11:35:26 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "sampleDf.count().collect()",
+      "dateUpdated": "Jun 28, 2016 11:36:24 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1467128138066_-2103506148",
+      "id": "20160628-113538_1659411099",
+      "result": {
+        "code": "ERROR",
+        "type": "TEXT",
+        "msg": "\u003cconsole\u003e:32: error: value collect is not a member of Long\n              sampleDf.count().collect()\n                               ^\n"
+      },
+      "dateCreated": "Jun 28, 2016 11:35:38 AM",
+      "dateStarted": "Jun 28, 2016 11:36:24 AM",
+      "dateFinished": "Jun 28, 2016 11:36:24 AM",
+      "status": "ERROR",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "val selectLoanStatus \u003d inDf.select(\"loan_status\").cache()\nval total \u003d selectLoanStatus.count()\n\nval res \u003d selectLoanStatus.groupBy(\"loan_status\").agg(\n    count(\"*\").as(\"freq\"),\n    count(\"*\").multiply(100).divide(total).as(\"percentage\"))\n    .orderBy(desc(\"freq\"))\n    .collect()\n    \n",
+      "dateUpdated": "Jun 27, 2016 3:14:24 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [
+            {
+              "name": "[Current,601779,67.81533031545709]n[Fully Paid,207723,23.408599933061296]n[Charged Off,45248,5.099061393158955]n[Late (31-120 days),11591,1.3062062545992186]n[Issued,8460,0.953369417126166]n[In Grace Period,6253,0.7046594521619286]n[Late (16-30 days),2357,0.2656136780338503]n[Does not meet the credit policy. Status:Fully Paid,1988,0.22403054388260257]n[Default,1219,0.1373708415457206]n[Does not meet the credit policy. Status:Charged Off,761,0.0857581709731693]",
+              "index": 0.0,
+              "aggr": "sum"
+            }
+          ],
+          "values": [],
+          "groups": [],
+          "scatter": {
+            "xAxis": {
+              "name": "[Current,601779,67.81533031545709]n[Fully Paid,207723,23.408599933061296]n[Charged Off,45248,5.099061393158955]n[Late (31-120 days),11591,1.3062062545992186]n[Issued,8460,0.953369417126166]n[In Grace Period,6253,0.7046594521619286]n[Late (16-30 days),2357,0.2656136780338503]n[Does not meet the credit policy. Status:Fully Paid,1988,0.22403054388260257]n[Default,1219,0.1373708415457206]n[Does not meet the credit policy. Status:Charged Off,761,0.0857581709731693]",
+              "index": 0.0,
+              "aggr": "sum"
+            }
+          }
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1466797900154_-415300382",
+      "id": "20160624-155140_656639628",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "selectLoanStatus: org.apache.spark.sql.DataFrame \u003d [loan_status: string]\ntotal: Long \u003d 887379\nres: Array[org.apache.spark.sql.Row] \u003d Array([Current,601779,67.81533031545709], [Fully Paid,207723,23.408599933061296], [Charged Off,45248,5.099061393158955], [Late (31-120 days),11591,1.3062062545992186], [Issued,8460,0.953369417126166], [In Grace Period,6253,0.7046594521619286], [Late (16-30 days),2357,0.2656136780338503], [Does not meet the credit policy. Status:Fully Paid,1988,0.22403054388260257], [Default,1219,0.1373708415457206], [Does not meet the credit policy. Status:Charged Off,761,0.0857581709731693])\n"
+      },
+      "dateCreated": "Jun 24, 2016 3:51:40 PM",
+      "dateStarted": "Jun 27, 2016 3:14:24 PM",
+      "dateFinished": "Jun 27, 2016 3:14:34 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "",
+      "dateUpdated": "Nov 4, 2016 3:17:26 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {},
+          "map": {
+            "baseMapType": "Streets",
+            "isOnline": true,
+            "pinCols": []
+          }
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1466798289979_803318689",
+      "id": "20160624-155809_1586732512",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT"
+      },
+      "dateCreated": "Jun 24, 2016 3:58:09 PM",
+      "dateStarted": "Jun 24, 2016 4:13:00 PM",
+      "dateFinished": "Jun 24, 2016 4:13:04 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "test spark",
+  "id": "2BNACZ8PP",
+  "angularObjects": {},
+  "config": {},
+  "info": {}
+}
