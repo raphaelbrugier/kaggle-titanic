@@ -307,9 +307,27 @@
       "progressUpdateIntervalMs": 500
     },
     {
-      "text": "%sql\n",
-      "dateUpdated": "Nov 4, 2016 7:54:32 PM",
-      "config": {},
+      "text": "val mother: String \u003d\u003e String \u003d {\n      case \"Miss\" \u003d\u003e \"Miss\"\n      case \"Mr\" \u003d\u003e \"Mr\"\n      case \"Mrs\" \u003d\u003e \"Mrs\"\n      case _ \u003d\u003e \"RareTitle\"\n    }\n\ntrainingEng \u003d trainingEng.withColumn(\"cleanedTitle\", udf(titleToCleanedTitle).apply(trainingEng(\"title\")))\n",
+      "dateUpdated": "Nov 4, 2016 8:37:08 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {},
+          "map": {
+            "baseMapType": "Streets",
+            "isOnline": true,
+            "pinCols": []
+          }
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/text"
+      },
       "settings": {
         "params": {},
         "forms": {}
