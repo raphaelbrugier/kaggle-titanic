@@ -1,7 +1,8 @@
 import org.apache.spark.ml.Pipeline
-import org.apache.spark.ml.classification.RandomForestClassifier
+import org.apache.spark.ml.classification.{RandomForestClassificationModel, RandomForestClassifier}
 import org.apache.spark.ml.evaluation.BinaryClassificationEvaluator
 import org.apache.spark.ml.feature.{StringIndexer, VectorAssembler}
+import org.apache.spark.ml.linalg.Vector
 import org.apache.spark.ml.tuning.{CrossValidator, ParamGridBuilder}
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.{SparkSession, _}
@@ -91,9 +92,10 @@ object TitanicMain {
       .setOutputCol("Label")
       .fit(training)
 
+    val features: Array[String] = Array("Pclass", "Age", "Fare", "SexIndex", "EmbarkedIndex", "titleIndex", "mother")
     // Features
     val assembler = new VectorAssembler()
-      .setInputCols(Array("Pclass", "Age", "Fare", "SexIndex", "EmbarkedIndex", "titleIndex", "mother"))
+      .setInputCols(features)
       .setOutputCol("Features")
 
     val randomForest = new RandomForestClassifier()
@@ -110,8 +112,17 @@ object TitanicMain {
       )
     )
 
+    // train the model
     val model = pipeline.fit(training)
 
+    // display the features importance in the RandomForest algo
+    val importances: Vector = model.stages(5).asInstanceOf[RandomForestClassificationModel].featureImportances
+
+    println("feature importances:")
+    println(features.mkString(", "))
+    println(importances)
+
+    // Use the model to make predictions
     val predictions = model.transform(test)
     predictions.selectExpr("PassengerId", "cast(prediction as int) Survived")
       .repartition(1)
@@ -122,8 +133,8 @@ object TitanicMain {
 
     predictions.show()
 
-    // With cross validation
 
+    // With cross validation
     val params = new ParamGridBuilder()
       .addGrid(randomForest.maxDepth, Array(4, 8, 12))
       .addGrid(randomForest.numTrees, Array(15, 30, 50))
